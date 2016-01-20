@@ -5,8 +5,8 @@ display.setStatusBar(display.HiddenStatusBar);--Hide stat bar, obvious I know.
 gap = 10
 rectWidth = 50
 rectHeight = 50
-gridWidth = 9
-gridHeight = 14
+gridWidth = 10
+gridHeight = 16
 canBuild = true 
 
 -- Variables for Scoring
@@ -14,19 +14,26 @@ maximumScore = gridWidth * gridHeight
 currentScore = maximumScore
 shipSquareCount = 0
 
-debugMode = true -- Debug Mode is to show no two ships overlap
+debugMode = true -- Debug Mode is to show no two ships overlap, it will also show ship placement on grid, just set to true and run
 
 -- Set position to centre
 xPos = display.contentWidth/2
 yPos = display.contentHeight/2
  
  -- The entire Canvas of screen
-TotalscreenWidth = (gridWidth * rectWidth/2) +(35 * (gridWidth-1)) 
-TotalscreenHeight= (gridHeight * rectHeight/2) +(35 * (gridHeight-1))
+TotalscreenWidth = (gridWidth * rectWidth/2) +((rectWidth/2+gap) * (gridWidth-1)) 
+TotalscreenHeight= (gridHeight * rectHeight/2) +((rectHeight/2+gap) * (gridHeight-1)) 
+
+Xgrid = xPos - TotalscreenWidth/2-- If remove comments on line 34 remove lines 31-32, code will work fine
+Ygrid = yPos - TotalscreenHeight/2--
  
  -- Aligns grid X and Y into the centre of the screen, RectGap/2 gaps each rectangle by quarter of Rectsize size (12.5)
-Xgrid = xPos - (TotalscreenWidth/2)+rectHeight/4
-Ygrid = yPos - (TotalscreenHeight/2)+rectWidth/4
+Xgrid = Xgrid + rectHeight/4
+Ygrid = Ygrid + rectWidth/4
+
+--Ygrid = yPos - (TotalscreenHeight/2)+rectWidth/4 Another way to display canvas
+--Xgrid = xPos - (TotalscreenWidth/2)+rectHeight/4 --
+
 
 rects = {}
 for i = 1, gridWidth, 1 do
@@ -34,17 +41,17 @@ for i = 1, gridWidth, 1 do
 end
 
 function tapped(event)
-	if not event.target.hasBeenTapped then
-		event.target.hasBeenTapped = true
-		updateScore()
-		if event.target.ship then
-			event.target:setFillColor(255,0,0)
-			shipSquareCount = shipSquareCount - 1
+	if not event.target.hasBeenTapped then -- If tapped
+		event.target.hasBeenTapped = true -- Continue
+		if event.target.ship then	-- If theres a ship
+			event.target:setFillColor(255,0,0) --Set white sqaure red
+			shipSquareCount = shipSquareCount - 1 --decrease over ship count
 			if shipSquareCount <= 0 then
-				winScreen()
+				winScreen() 
 			end
 		else
-			event.target:setFillColor(0,255,0)
+			updateScore()-- Your score starts off gridWidth * gridHeight, Each miss will decrease score valu
+			event.target:setFillColor(0,255,0) --Each sqaure that has no ship present will be set Green
 		end
 	end
 end
@@ -58,7 +65,7 @@ for i = 1, gridWidth, 1 do
 		rects[i][j]:addEventListener("tap", tapped)
 		rects[i][j].ship = false
 		rects[i][j].hasBeenTapped = false
-		end
+	end
 end -- End array for loop
 
 function makeShip(shipSize)
@@ -66,16 +73,16 @@ function makeShip(shipSize)
 	x = math.random(1,gridWidth)
 	y = math.random(1,gridHeight)
 	if debugMode then
-		r = math.random(0,255)
-		g = math.random(0,255)
-		b = math.random(0,255)
+		r = math.random(0,0)
+		g = math.random(0,255)--Make all ship tiles teal colour
+		b = math.random(0,255)--
 	end
 	
 	if rects[x][y].ship then
 		canBuild = false
 	end
 	if canBuild then
-		if math.random(1,2) == 1 then
+		if math.random(1,2) == 1 then -- Choose to build vert (1) or horz (2)
 			--Across
 			if x + shipSize >= gridWidth + 1 then
 				--Test Left
@@ -171,16 +178,17 @@ function makeShip(shipSize)
 			end
 		end
 	end
-	
+
 	if not canBuild then
 		makeShip(shipSize)
 	end
 end
 
-makeShip(2) --Create X sized ship, call more functions to add ships
-makeShip(4) 
+makeShip(2) --Create X sized ship, call more functions to add ships, Issues arise if you trie build >5 ships, it may crash upon load from makeShip method
+makeShip(3) 
 makeShip(5) 
-makeShip(6) 
+makeShip(5) 
+
 -- Code to set up Scoring
 scoreText = display.newText("Score: "..currentScore, 0, 0, nil, 40) -- Nil shows no value, 40 indicates size
 scoreText.x = display.contentWidth/2
@@ -188,6 +196,7 @@ scoreText.y = 30 -- Move text 40pixels down Y-axis
 scoreText:setFillColor( 1, 0, .5 )
 
 function updateScore()
+
 	currentScore = currentScore - 1
 	scoreText.text = "Score: "..currentScore
 end
