@@ -9,7 +9,7 @@ gridWidth = 9--How many tiles will be printed?
 gridHeight = 14--
 canBuild = true -- Controls ship building fore makeShips
 --
-ShowMessages=false -- Helps display correct array for messages
+ShowMessages=false -- Helps display on start up
 Messages ={} --Create global variable to hold Messages
 
 --Each time Messages is called it'll run though this array and pick out a Toast to display 
@@ -32,8 +32,8 @@ Messages.whiff = {"What a scrub",
   maximumScore = (gridWidth * gridHeight)
   currentScore = maximumScore
   shipSquareCount = 0
-  
-  debugMode = true-- Debug Mode is to show no two ships overlap, it will also show ship placement on grid, just set to true and run
+  --SET TO 'true' to see ships on start up
+  debugMode = false-- Debug Mode is to show no two ships overlap, it will also show ship placement on grid, just set to true and run
   
   -- Set position to centre
   xPos = display.contentWidth/2
