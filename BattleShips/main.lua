@@ -12,19 +12,21 @@ canBuild = true
 ShowMessages=false -- Helps display correct array for messages
 Messages ={} --Create global variable to hold Messages
 
-Messages.hit = {"Direct hit!", --Each time Messages is called it'll run though this array and pick out a Toast to display 
-				"Tis' but a scratch", 
-				"That hurt!", 
-				"Ouch", 
-				"Try hitting us again", 
-				"So cruel"}
-Messages.whiff = {
-			  "What a scrub", --Each time Messages is called it'll run though this array and pick out a Toast to display 
-			  "Where were you aiming?",
-			  "Nice shot, jking ",
-			  "pfft",
-			  "Clean your glasses",
-			  "Dumb and blind huh?"}      
+--Each time Messages is called it'll run though this array and pick out a Toast to display 
+Messages.hit = {"Direct hit!",
+		"Tis' but a scratch", 
+		"That hurt!", 
+		"Ouch", 
+		"Try hitting us again", 
+		"So cruel"}
+--Each time Messages is called it'll run though this array and pick out a Toast to display 
+Messages.whiff = {"What a scrub", 
+		 "Where were you aiming?",
+		 "Nice shot, jking ",
+		 "pfft",
+		 "Clean your glasses",
+		 "Dumb and blind huh?"} 
+			       
   
   -- Variables for Scoring
   maximumScore = (gridWidth * gridHeight)
