@@ -1,13 +1,13 @@
---Ciaran Carrick assignment, Any copy pasta in your work You'll fail, no exceptions.
+--Ciaran Carrick
 display.setStatusBar(display.HiddenStatusBar);--Hide stat bar, obvious I know.
 
 -- Variables for Basic Functionality
-gap = 10
-rectWidth = 50
-rectHeight = 50
-gridWidth = 9
-gridHeight = 14
-canBuild = true 
+gap = 10--Gap between each tile
+rectWidth = 50--Width of our tiles
+rectHeight = 50--
+gridWidth = 9--How many tiles will be printed?
+gridHeight = 14--
+canBuild = true -- Controls ship building fore makeShips
 --
 ShowMessages=false -- Helps display correct array for messages
 Messages ={} --Create global variable to hold Messages
@@ -43,16 +43,15 @@ Messages.whiff = {"What a scrub",
   TotalscreenWidth = (gridWidth * rectWidth/2) +((rectWidth/2+gap) * (gridWidth-1)) 
   TotalscreenHeight= (gridHeight * rectHeight/2) +((rectHeight/2+gap) * (gridHeight-1)) 
   
-  Xgrid = xPos - TotalscreenWidth/2-- If remove comments on line 34 remove lines 31-32, code will work fine
+  Xgrid = xPos - TotalscreenWidth/2-- If remove comments on line 34 remove lines 50-51, code will work fine
   Ygrid = yPos - TotalscreenHeight/2--
    
-   -- Aligns grid X and Y into the centre of the screen, RectGap/2 gaps each rectangle by quarter of Rectsize size (12.5)
+   -- Aligns grid X and Y into the centre of the screen
   Xgrid = Xgrid + rectHeight/4
   Ygrid = Ygrid + rectWidth/4
   
   --Ygrid = yPos - (TotalscreenHeight/2)+rectWidth/4 Another way to display canvas
   --Xgrid = xPos - (TotalscreenWidth/2)+rectHeight/4 --
-  
   
   rects = {}
   for i = 1, gridWidth, 1 do
@@ -61,33 +60,33 @@ Messages.whiff = {"What a scrub",
   
   function tapped(event)
    --default feedback message and message colour
-          toast = ''
-          toast_color = {r=255,g=0,b=0} -- Set to red on hit
-    if not event.target.hasBeenTapped then  -- If tapped
-      event.target.hasBeenTapped = true   -- Continue
-      if event.target.ship then        -- If theres a ship
-        ShowMessages=true
-          toast = Messages.hit[math.random(1,#Messages.hit)]
-        Toast(toast, toast_color)
-        event.target:setFillColor(255,0,0) --Set white sqaure red
-        shipSquareCount = shipSquareCount - 1 --decrease over ship count
+    toast = ''
+    toast_color = {r=255,g=0,b=0} -- Set toast to red
+    if not event.target.hasBeenTapped then   -- If tapped
+       event.target.hasBeenTapped = true      -- Continue
+      if event.target.ship then              -- If theres a ship
+         ShowMessages=true
+         toast = Messages.hit[math.random(1,#Messages.hit)]
+         Toast(toast, toast_color)
+         event.target:setFillColor(255,0,0)    --Set white sqaure red
+         shipSquareCount = shipSquareCount - 1 --decrease over ship count
       else
-        Messages.text.isVisible = false--Check for UI visibility
-        ShowMessages=false
-        updateScore()-- Your score starts off gridWidth * gridHeight, Each miss will decrease score valu
-        event.target:setFillColor(0,255,0) --Each sqaure that has no ship present will be set Green
+         Messages.text.isVisible = false--Hide toast text
+         ShowMessages=false
+         updateScore()-- Score starts off gridWidth * gridHeight, Each miss will decrease score value
+         event.target:setFillColor(0,255,0) --Each sqaure that has no ship present will be set Green
       end
-      if math.random(1,100) > 60 then -- 40% chance
+      if math.random(1,100) > 60 then -- 40% chance of showing whiff message
         if not ShowMessages then
-          toast_color = {r=255,g=255,b=255}-- Set to white on whiff
-        toast = Messages.whiff[math.random(1,#Messages.whiff)]
-        Toast(toast, toast_color)
+          toast_color = {r=255,g=255,b=255}-- Set to white text
+          toast = Messages.whiff[math.random(1,#Messages.whiff)] -- pick a random whiff message from 1 to array length
+          Toast(toast, toast_color)
         end
         Messages.text.isVisible = true--Check for UI visibility
       end
-	  if shipSquareCount <= 0 then
-          winScreen() 
-        end
+      if shipSquareCount <= 0 then
+         winScreen() 
+      end
   end
  end
   
@@ -108,7 +107,7 @@ Messages.whiff = {"What a scrub",
     canBuild = true
     x = math.random(1,gridWidth)
     y = math.random(1,gridHeight)
-    if debugMode then
+    if debugMode then --debugMode is active all ship tiles which have notbeentapped will appear in teal
       r = math.random(0,0)
       g = math.random(0,255)--Make all ship tiles teal colour
       b = math.random(0,255)--
@@ -221,17 +220,18 @@ Messages.whiff = {"What a scrub",
   end
   --
   makeShip(2) --Create X sized ship, call more functions to add ships, Issues arise if you trie build >5 ships, it may crash upon load from makeShip method
-  --[[makeShip(3) 
+  makeShip(3) 
   makeShip(5) 
-  makeShip(5) 
-  ]]
+  makeShip(4) 
+  
   -- Code to set up Scoring
   scoreText = display.newText("Score: "..currentScore, 0, 0, nil, 40) -- Nil shows no value, 40 indicates size
   scoreText.x = display.contentWidth/2
   scoreText.y = 30 -- Move text 30pixels down Y-axis
   scoreText:setFillColor( 1, 0, .1 )
   
-  --TOASTS
+  --TOASTS, messages that will display on the screen when tapped function is called, 
+  --white text will be shown when empty tiles are clicked, red when a ship is present
   --
   Messages.text = display.newText({
       x=display.contentWidth/2,
@@ -257,7 +257,6 @@ Messages.whiff = {"What a scrub",
   --
   --
   function updateScore()
-  
     currentScore = currentScore - 1
     scoreText.text = "Score: "..currentScore
   end
@@ -268,7 +267,7 @@ Messages.whiff = {"What a scrub",
     for i = 1, gridWidth, 1 do
       for j = 1, gridHeight, 1 do
         rects[i][j].isVisible = false
-		Messages.text.isVisible=false
+	Messages.text.isVisible=false
       end
     end
     -- Show Win Screen Stuff
@@ -280,3 +279,4 @@ Messages.whiff = {"What a scrub",
     finalScoreText.y = display.contentHeight/2+80
     finalScoreText:setFillColor( 1, 0, .1 )
 end
+--end program
