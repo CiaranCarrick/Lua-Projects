@@ -2,23 +2,24 @@
 display.setStatusBar(display.HiddenStatusBar);--Hide stat bar, obvious I know.
 
 -- Variables for Basic Functionality
-gap = 10--Gap between each tile
+gap = 6--Gap between each tile, Increased by 1 unit
 rectWidth = 50--Width of our tiles
-rectHeight = 50--
-gridWidth = 9--How many tiles will be printed?
-gridHeight = 14--
+rectHeight = 50--Height of our tiles, I could just use 1 size for tiles but chose to this method instead
+gridWidth = 10--How many tiles will be printed?
+gridHeight = 16--
 canBuild = true -- Controls ship building fore makeShips
 --
 ShowMessages=false -- Helps display on start up
 Messages ={} --Create global variable to hold Messages
 
 --Each time Messages is called it'll run though this array and pick out a Toast to display 
-Messages.hit = {"Direct hit!",
+Messages.hit = {"Ship has been hit!",
 		"Tis' but a scratch", 
 		"That hurt!", 
 		"Ouch", 
 		"Try hitting us again", 
-		"So cruel"}
+		"You'll pay for this!",
+		"grr"}
 --Each time Messages is called it'll run though this array and pick out a Toast to display 
 Messages.whiff = {"What a scrub", 
 		 "Where were you aiming?",
@@ -27,7 +28,6 @@ Messages.whiff = {"What a scrub",
 		 "Clean your glasses",
 		 "Dumb and blind huh?"} 
 			       
-  
   -- Variables for Scoring
   maximumScore = (gridWidth * gridHeight)
   currentScore = maximumScore
@@ -35,27 +35,27 @@ Messages.whiff = {"What a scrub",
   --SET TO 'true' to see ships on start up
   debugMode = false-- Debug Mode is to show no two ships overlap, it will also show ship placement on grid, just set to true and run
   
-  -- Set position to centre
-  xPos = display.contentWidth/2
-  yPos = display.contentHeight/2
+  -- Set position to centre,from the top left position grid_x and grid_y pos will start here
+  xCentre = display.contentWidth/2
+  yCentre = display.contentHeight/2
    
-   -- The entire Canvas of screen
-  TotalscreenWidth = (gridWidth * rectWidth/2) +((rectWidth/2+gap) * (gridWidth-1)) 
-  TotalscreenHeight= (gridHeight * rectHeight/2) +((rectHeight/2+gap) * (gridHeight-1)) 
+   -- The entire Canvas of screen with tile amount, sizes and gap per tile
+  TotalscreenWidth = (gridWidth * rectWidth) +(gap * (gridWidth-3))
+  TotalscreenHeight= (gridHeight * rectHeight) +(gap * (gridHeight-1)) 
   
-  Xgrid = xPos - TotalscreenWidth/2-- If remove comments on line 34 remove lines 50-51, code will work fine
-  Ygrid = yPos - TotalscreenHeight/2--
+  Xgrid = xCentre - TotalscreenWidth/2-- C
+  Ygrid = yCentre - TotalscreenHeight/2--
    
    -- Aligns grid X and Y into the centre of the screen
-  Xgrid = Xgrid + rectHeight/4
-  Ygrid = Ygrid + rectWidth/4
+  Xgrid = Xgrid + rectHeight/2
+  Ygrid = Ygrid + rectWidth/2
   
   --Ygrid = yPos - (TotalscreenHeight/2)+rectWidth/4 Another way to display canvas
   --Xgrid = xPos - (TotalscreenWidth/2)+rectHeight/4 --
   
-  rects = {}
+  rects = {} --Create empty array to store tiles
   for i = 1, gridWidth, 1 do
-    rects[i] = {}
+    rects[i] = {} --First fill with Horz tiles for following nested loop in tapped function
   end
   
   function tapped(event)
@@ -94,10 +94,9 @@ Messages.whiff = {"What a scrub",
   for i = 1, gridWidth, 1 do
     for j = 1, gridHeight, 1 do
       -- Draws out rectangles till 126 have been printed
-      rects[i][j] = display.newRect((Xgrid+(gap*i) +(i*rectWidth)-rectWidth-gap), (Ygrid+(gap*j) +(j*rectHeight)-rectWidth-gap), rectWidth, rectHeight)
-       -- Recognizes tap
-      rects[i][j]:addEventListener("tap", tapped)
-      rects[i][j].ship = false
+      rects[i][j] = display.newRect((Xgrid+(rectWidth + gap) * (i - 1)), (Ygrid +(rectHeight + gap) * (j - 1)), rectWidth, rectHeight) --Much cleaner than before
+      rects[i][j]:addEventListener("tap", tapped) -- adds event to each tile needed to Recognize tap
+      rects[i][j].ship = false --Set empty for default
       rects[i][j].hasBeenTapped = false
     end
   end -- End array for loop
@@ -219,7 +218,7 @@ Messages.whiff = {"What a scrub",
     end
   end
   --
-  makeShip(2) --Create X sized ship, call more functions to add ships, Issues arise if you trie build >5 ships, it may crash upon load from makeShip method
+  makeShip(2) 
   makeShip(3) 
   makeShip(5) 
   makeShip(4) 
@@ -227,20 +226,20 @@ Messages.whiff = {"What a scrub",
   -- Code to set up Scoring
   scoreText = display.newText("Score: "..currentScore, 0, 0, nil, 40) -- Nil shows no value, 40 indicates size
   scoreText.x = display.contentWidth/2
-  scoreText.y = 30 -- Move text 30pixels down Y-axis
+  scoreText.y = 40 -- Move text 40pixels down Y-axis
   scoreText:setFillColor( 1, 0, .1 )
   
   --TOASTS, messages that will display on the screen when tapped function is called, 
   --white text will be shown when empty tiles are clicked, red when a ship is present
   --
-  Messages.text = display.newText({
-      x=display.contentWidth/2,
-      y=display.contentHeight-30,
-      text="",
-      fontSize=32,
+  Messages.text = display.newText({ -- Add text specifications
+      x=display.contentWidth/2, -- Set from centre
+      y=display.contentHeight-40, -- Bottom and 40 units up
+      text="", 					  -- Set to null/nil
+      fontSize=36,
       font=native.systemFontBold,
-      align="Center"                                                      
-      })
+      align="Center"
+	  })
       
   function Toast(toast, color)
     if Messages and Messages.text and toast == '' then--Check UI
