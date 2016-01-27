@@ -10,7 +10,7 @@ gridHeight = 16--
 canBuild = true -- Controls ship building fore makeShips
 --
 ShowMessages=false -- Helps display on start up
-Messages ={} --Create global variable to hold Messages
+Messages ={} --Create Table to hold Messages
 
 --Each time Messages is called it'll run though this array and pick out a Toast to display 
 Messages.hit = {"Ship has been hit!",
@@ -33,7 +33,7 @@ Messages.whiff = {"What a scrub",
   currentScore = maximumScore
   shipSquareCount = 0
   --SET TO 'true' to see ships on start up
-  debugMode = false-- Debug Mode is to show no two ships overlap, it will also show ship placement on grid, just set to true and run
+  debugMode = true-- Debug Mode is to show no two ships overlap, it will also show ship placement on grid, just set to true and run
   
   -- Set position to centre,from the top left position grid_x and grid_y pos will start here
   xCentre = display.contentWidth/2
@@ -58,6 +58,7 @@ Messages.whiff = {"What a scrub",
     rects[i] = {} --First fill with Horz tiles for following nested loop in tapped function
   end
   
+
   function tapped(event)
    --default feedback message and message colour
     toast = ''
@@ -66,6 +67,7 @@ Messages.whiff = {"What a scrub",
        event.target.hasBeenTapped = true      -- Continue
       if event.target.ship then              -- If theres a ship
          ShowMessages=true
+		 system.vibrate() --Vibrate device when enemy ship is tapped
          toast = Messages.hit[math.random(1,#Messages.hit)]
          Toast(toast, toast_color)
          event.target:setFillColor(255,0,0)    --Set white sqaure red
@@ -236,8 +238,8 @@ Messages.whiff = {"What a scrub",
       x=display.contentWidth/2, -- Set from centre
       y=display.contentHeight-40, -- Bottom and 40 units up
       text="", 					  -- Set to null/nil
+	  font = native.systemFont,
       fontSize=36,
-      font=native.systemFontBold,
       align="Center"
 	  })
       
