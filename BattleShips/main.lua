@@ -33,7 +33,7 @@ Messages.whiff = {"What a scrub",
   currentScore = maximumScore
   shipSquareCount = 0
   --SET TO 'true' to see ships on start up
-  debugMode = true-- Debug Mode is to show no two ships overlap, it will also show ship placement on grid, just set to true and run
+  debugMode = false-- Debug Mode is to show no two ships overlap, it will also show ship placement on grid, just set to true and run
   
   -- Set position to centre,from the top left position grid_x and grid_y pos will start here
   xCentre = display.contentWidth/2
